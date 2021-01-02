@@ -97,7 +97,7 @@ func (l *labsDelivery) GetUsers(message *tgbotapi.Message) (result string, err e
 }
 
 func (l *labsDelivery) GetLabs(message *tgbotapi.Message) (result string, err error) {
-	userID, err := l.commands. ExtractStudentID(message.CommandArguments())
+	userID, err := l.commands.ExtractStudentID(message.CommandArguments())
 	if err != nil {
 		return "", errors.Errorf("Задайте номер студента")
 	}

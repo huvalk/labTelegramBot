@@ -7,18 +7,18 @@ import (
 )
 
 type Commands struct {
-	fullName *regexp.Regexp
-	group    *regexp.Regexp
-	lab    *regexp.Regexp
-	studentID    *regexp.Regexp
+	fullName  *regexp.Regexp
+	group     *regexp.Regexp
+	lab       *regexp.Regexp
+	studentID *regexp.Regexp
 }
 
 func NewCommandList() Commands {
 	return Commands{
-		fullName: compileRegexp(`(?:[А-Яа-я]+\s){1,3}[А-Яа-я]+(?:\sИУ)`),
-		group:    compileRegexp(`ИУ\d-\d{2}`),
-		lab:    compileRegexp(`\d+`),
-		studentID:    compileRegexp(`\d+`),
+		fullName:  compileRegexp(`(?:[А-Яа-я]+\s){1,3}[А-Яа-я]+(?:\sИУ)`),
+		group:     compileRegexp(`ИУ\d-\d{2}`),
+		lab:       compileRegexp(`\d+`),
+		studentID: compileRegexp(`\d+`),
 	}
 }
 

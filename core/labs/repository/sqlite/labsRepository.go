@@ -44,10 +44,10 @@ func (l *labsRepository) GetUsers(group string) (students []baseModels.Student, 
 	}
 	defer rows.Close()
 
-	for rows.Next(){
+	for rows.Next() {
 		s := baseModels.Student{}
 		err := rows.Scan(&s.UserID, &s.FullName, &s.Nickname)
-		if err != nil{
+		if err != nil {
 			return nil, err
 		}
 		students = append(students, s)
@@ -65,10 +65,10 @@ func (l *labsRepository) GetLabs(userId int) (labs []baseModels.Lab, err error) 
 	}
 	defer rows.Close()
 
-	for rows.Next(){
+	for rows.Next() {
 		l := baseModels.Lab{}
 		err := rows.Scan(&l.LabNum, &l.Status, &l.FilePath)
-		if err != nil{
+		if err != nil {
 			return nil, err
 		}
 		labs = append(labs, l)
