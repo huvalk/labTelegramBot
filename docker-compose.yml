@@ -5,10 +5,8 @@ services:
     env_file:
       - ../env.list
     volumes:
-      - ../sqlite-data:./data
-    working_dir: /go/src/labTelegramBot/cmd/
-    ports:
-      - "9000:9000"
+      - ../sql-data:/go/src/labTelegramBot/data
+    working_dir: /go/src/labTelegramBot/
     stdin_open: true
     tty: true
     network_mode: host

@@ -1,9 +1,9 @@
-FROM golang:alpine
+FROM tetafro/golang-gcc:latest
 
-COPY . /app
+COPY . /go/src/labTelegramBot
 
-WORKDIR /app
+WORKDIR /go/src/labTelegramBot
 
 RUN apk add make && make build-app
 
-CMD /app/app
+CMD /go/src/labTelegramBot/app
