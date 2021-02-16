@@ -18,7 +18,7 @@ func NewLabsRepository(db *sql.DB) labsInterfaces.LabsRepository {
 }
 
 func (l *labsRepository) Register(user baseModels.Student) error {
-	reg := "INSERT INTO students (userId, fullName, groupNum, nickname, chatId) " +
+	reg := "INSERT INTO students (id, fullName, groupNum, nickname, chatId) " +
 		"VALUES( $1, $2, $3, $4, $5)"
 	_, err := l.db.Exec(reg,
 		user.UserID, user.FullName, user.GroupName, user.Nickname, user.ChatID)
@@ -27,7 +27,7 @@ func (l *labsRepository) Register(user baseModels.Student) error {
 }
 
 func (l *labsRepository) UploadLab(lab baseModels.Lab) error {
-	upload := "REPLACE INTO labs (studentId, labNum, filePath, status, messageId) " +
+	upload := "REPLACE INTO labs (student_id, labNum, filePath, status, messageId) " +
 		"VALUES( $1, $2, $3, $4, $5)"
 	_, err := l.db.Exec(upload,
 		lab.StudentID, lab.LabNum, lab.FilePath, lab.Status, lab.MessageID)
@@ -36,7 +36,7 @@ func (l *labsRepository) UploadLab(lab baseModels.Lab) error {
 }
 
 func (l *labsRepository) GetUsers(group string) (students []baseModels.Student, err error) {
-	users := "SELECT userId, fullName, nickname FROM students " +
+	users := "SELECT id, fullName, nickname FROM students " +
 		"WHERE groupNum = $1"
 	rows, err := l.db.Query(users, group)
 	if err != nil {
@@ -58,7 +58,7 @@ func (l *labsRepository) GetUsers(group string) (students []baseModels.Student, 
 
 func (l *labsRepository) GetLabs(userId int) (labs []baseModels.Lab, err error) {
 	status := "SELECT labNum, status, filePath FROM labs " +
-		"WHERE studentId = $1"
+		"WHERE student_id = $1"
 	rows, err := l.db.Query(status, userId)
 	if err != nil {
 		return nil, err
@@ -75,4 +75,13 @@ func (l *labsRepository) GetLabs(userId int) (labs []baseModels.Lab, err error) 
 	}
 
 	return labs, err
+}
+
+func (l *labsRepository) SaveMessage(message baseModels.Message) (err error) {
+	reg := "INSERT INTO messages (user_id, chatId, messageId, text, addition) " +
+		"VALUES( $1, $2, $3, $4, $5)"
+	_, err = l.db.Exec(reg,
+		message.StudentID, message.ChatID, message.MessageID, message.Message, message.Additional)
+
+	return err
 }

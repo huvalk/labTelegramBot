@@ -135,3 +135,21 @@ func (l *labsDelivery) GetAllLabs(message *tgbotapi.Message) (result string, err
 
 	return result, err
 }
+
+func (l *labsDelivery) SaveMessage(message *tgbotapi.Message) (err error) {
+	messageToSave := baseModels.Message{
+		StudentID:  message.From.ID,
+		MessageID:  message.MessageID,
+		ChatID:     message.Chat.ID,
+		Message:    message.CommandArguments() + "\n" + message.Text + "\n" + message.Caption,
+		Additional: message.From.FirstName + "\n" + message.From.LastName + "\n" + message.From.UserName,
+	}
+
+	if err != nil {
+		return err
+	}
+
+	err = l.repo.SaveMessage(messageToSave)
+
+	return err
+}

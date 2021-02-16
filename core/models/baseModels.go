@@ -15,3 +15,11 @@ type Lab struct {
 	Status    string
 	MessageID int
 }
+
+type Message struct {
+	StudentID int
+	MessageID int
+	ChatID    int64
+	Message string
+	Additional string
+}

@@ -43,8 +43,12 @@ func (l *labsDelivery) StartDelivery() error {
 			}
 
 			message := update.Message
+			err := l.SaveMessage(message)
+			if err != nil {
+				golog.Error("Cant save log message: ", err)
+			}
+
 			var replay string
-			var err error
 			switch message.Command() {
 			case "register":
 				err = l.RegisterUser(message)
