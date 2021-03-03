@@ -19,7 +19,18 @@ create table if not exists messages
      chatId INTEGER NOT NULL,
      messageId INTEGER NOT NULL,
      text TEXT NOT NULL,
-     addition TEXT NOT NULL);
+     addition TEXT NOT NULL,
+     sent TIMESTAMP);
+
+create table if not exists questions
+(
+    user_id   INTEGER not null,
+    chatId    INTEGER not null,
+    messageId INTEGER not null,
+    text      TEXT    not null,
+    addition  TEXT    not null,
+    sent TIMESTAMP
+);
 
 CREATE UNIQUE INDEX if not exists idx_labNum_studentId
     ON labs (student_id, labNum);

@@ -50,6 +50,19 @@ func (l *labsDelivery) StartDelivery() error {
 
 			var replay string
 			switch message.Command() {
+			case "start":
+				replay = "/register ФИО ИУ7-4X - для регистрации (обязательно)\n" +
+					"*номер лабы* + pdf одним  сообщением - отправить лабу\n" +
+					"/progress - увидеть статус своих лабы\n" +
+					"/question ВОПРОС - задать вопрос"
+			case "question":
+				err = l.SaveQuestion(message)
+				if err != nil {
+					golog.Error("question error: ", err)
+					replay = err.Error()
+				} else {
+					replay = "Вопрос задан"
+				}
 			case "register":
 				err = l.RegisterUser(message)
 				if err != nil {

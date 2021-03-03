@@ -78,9 +78,18 @@ func (l *labsRepository) GetLabs(userId int) (labs []baseModels.Lab, err error) 
 }
 
 func (l *labsRepository) SaveMessage(message baseModels.Message) (err error) {
-	reg := "INSERT INTO messages (user_id, chatId, messageId, text, addition) " +
-		"VALUES( $1, $2, $3, $4, $5)"
+	reg := "INSERT INTO messages (user_id, chatId, messageId, text, addition, sent) " +
+		"VALUES( $1, $2, $3, $4, $5, CURRENT_TIMESTAMP)"
 	_, err = l.db.Exec(reg,
+		message.StudentID, message.ChatID, message.MessageID, message.Message, message.Additional)
+
+	return err
+}
+
+func (l *labsRepository) SaveQuestion(message baseModels.Message) error {
+	reg := "INSERT INTO questions (user_id, chatId, messageId, text, addition, sent) " +
+		"VALUES( $1, $2, $3, $4, $5, CURRENT_TIMESTAMP)"
+	_, err := l.db.Exec(reg,
 		message.StudentID, message.ChatID, message.MessageID, message.Message, message.Additional)
 
 	return err

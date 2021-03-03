@@ -153,3 +153,21 @@ func (l *labsDelivery) SaveMessage(message *tgbotapi.Message) (err error) {
 
 	return err
 }
+
+func (l *labsDelivery) SaveQuestion(message *tgbotapi.Message) (err error) {
+	messageToSave := baseModels.Message{
+		StudentID:  message.From.ID,
+		MessageID:  message.MessageID,
+		ChatID:     message.Chat.ID,
+		Message:    message.CommandArguments(),
+		Additional: message.From.FirstName + "\n" + message.From.LastName + "\n" + message.From.UserName,
+	}
+
+	if err != nil {
+		return err
+	}
+
+	err = l.repo.SaveQuestion(messageToSave)
+
+	return err
+}

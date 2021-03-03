@@ -8,4 +8,5 @@ type LabsRepository interface {
 	GetUsers(group string) (students []baseModels.Student, err error)
 	UploadLab(lab baseModels.Lab) error
 	SaveMessage(message baseModels.Message) error
+	SaveQuestion(message baseModels.Message) error
 }
