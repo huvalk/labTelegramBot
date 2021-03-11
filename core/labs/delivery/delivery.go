@@ -35,14 +35,24 @@ func (l *labsDelivery) StartDelivery() error {
 	for {
 		select {
 		case update := <-l.updates:
-			if update.Message == nil {
-				continue
+			message := update.Message
+			if message == nil {
+				message = update.EditedMessage
 			}
-			if update.Message.Chat.IsGroup() {
+			if message == nil {
+				msg := tgbotapi.NewMessage(message.Chat.ID, "Что-то пошло не так, отправьте сообщение заново")
+				msg.ParseMode = "HTML"
+				_, err := l.bot.Send(msg)
+				if err != nil {
+					golog.Error("sendMessage error: ", err)
+				}
 				continue
 			}
 
-			message := update.Message
+			if message.Chat.IsGroup() {
+				continue
+			}
+
 			err := l.SaveMessage(message)
 			if err != nil {
 				golog.Error("Cant save log message: ", err)
@@ -50,11 +60,18 @@ func (l *labsDelivery) StartDelivery() error {
 
 			var replay string
 			switch message.Command() {
+			case "help":
+				replay = "/register ФИО ИУ7-4X - для регистрации (обязательно)\n" +
+					"*номер лабы* + pdf одним  сообщением - отправить лабу\n" +
+					"/progress - увидеть статус своих лабы\n" +
+					"/question ВОПРОС - задать вопрос\n\n" +
+					"ВАЖНО Бот не хранит состояние, одно действие - одно сообщение"
 			case "start":
 				replay = "/register ФИО ИУ7-4X - для регистрации (обязательно)\n" +
 					"*номер лабы* + pdf одним  сообщением - отправить лабу\n" +
 					"/progress - увидеть статус своих лабы\n" +
-					"/question ВОПРОС - задать вопрос"
+					"/question ВОПРОС - задать вопрос\n\n" +
+					"ВАЖНО Бот не хранит состояние, одно действие - одно сообщение"
 			case "question":
 				err = l.SaveQuestion(message)
 				if err != nil {

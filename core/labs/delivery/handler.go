@@ -53,9 +53,9 @@ func (l *labsDelivery) GetStatus(message *tgbotapi.Message) (result string, err 
 func (l *labsDelivery) UploadLab(message *tgbotapi.Message) (err error) {
 	doc := message.Document
 	if doc == nil {
-		return errors.Errorf("Загрузите pdf с лабой")
+		return errors.Errorf("Повторите снова, не прикреплен pdf с лабой")
 	} else if !strings.Contains(doc.FileName, ".pdf") {
-		return errors.Errorf("Файл должен быть pdf")
+		return errors.Errorf("Повторите снова, файл должен быть pdf")
 	}
 
 	fileURL, err := l.bot.GetFileDirectURL(doc.FileID)
@@ -74,7 +74,7 @@ func (l *labsDelivery) UploadLab(message *tgbotapi.Message) (err error) {
 
 	lab.LabNum, err = l.commands.ExtractLab(message.Caption)
 	if err != nil {
-		return errors.Errorf("Задайте номер лабы")
+		return errors.Errorf("Повторите снова, не указан номер лабы")
 	}
 	err = l.repo.UploadLab(lab)
 
@@ -84,7 +84,7 @@ func (l *labsDelivery) UploadLab(message *tgbotapi.Message) (err error) {
 func (l *labsDelivery) GetUsers(message *tgbotapi.Message) (result string, err error) {
 	group, err := l.commands.ExtractGroup(message.CommandArguments())
 	if err != nil {
-		return "", errors.Errorf("Задайте номер группы")
+		return "", errors.Errorf("Повторите снова, не указан номер группы")
 	}
 	students, err := l.repo.GetUsers(group)
 
@@ -99,7 +99,7 @@ func (l *labsDelivery) GetUsers(message *tgbotapi.Message) (result string, err e
 func (l *labsDelivery) GetLabs(message *tgbotapi.Message) (result string, err error) {
 	userID, err := l.commands.ExtractStudentID(message.CommandArguments())
 	if err != nil {
-		return "", errors.Errorf("Задайте номер студента")
+		return "", errors.Errorf("Повторите снова, не указан номер студента")
 	}
 
 	labs, err := l.repo.GetLabs(userID)
@@ -117,7 +117,7 @@ func (l *labsDelivery) GetLabs(message *tgbotapi.Message) (result string, err er
 func (l *labsDelivery) GetAllLabs(message *tgbotapi.Message) (result string, err error) {
 	group, err := l.commands.ExtractGroup(message.CommandArguments())
 	if err != nil {
-		return "", errors.Errorf("Задайте номер группы")
+		return "", errors.Errorf("Повторите снова, не указан номер группы")
 	}
 	students, err := l.repo.GetUsers(group)
 
@@ -145,10 +145,6 @@ func (l *labsDelivery) SaveMessage(message *tgbotapi.Message) (err error) {
 		Additional: message.From.FirstName + "\n" + message.From.LastName + "\n" + message.From.UserName,
 	}
 
-	if err != nil {
-		return err
-	}
-
 	err = l.repo.SaveMessage(messageToSave)
 
 	return err
@@ -161,10 +157,6 @@ func (l *labsDelivery) SaveQuestion(message *tgbotapi.Message) (err error) {
 		ChatID:     message.Chat.ID,
 		Message:    message.CommandArguments(),
 		Additional: message.From.FirstName + "\n" + message.From.LastName + "\n" + message.From.UserName,
-	}
-
-	if err != nil {
-		return err
 	}
 
 	err = l.repo.SaveQuestion(messageToSave)
