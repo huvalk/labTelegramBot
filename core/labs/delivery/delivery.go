@@ -117,6 +117,13 @@ func (l *labsDelivery) StartDelivery() error {
 					replay = err.Error()
 				}
 
+			case "spam":
+				err = l.Spam(message)
+				if err != nil {
+					golog.Error("spam error: ", err)
+					replay = err.Error()
+				}
+
 			default:
 				err = l.UploadLab(message)
 				if err != nil {

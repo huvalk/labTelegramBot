@@ -94,3 +94,23 @@ func (l *labsRepository) SaveQuestion(message baseModels.Message) error {
 
 	return err
 }
+
+func (l *labsRepository) GetAllUsersID() (IDs []int64, err error) {
+	status := "SELECT chatId FROM students"
+	rows, err := l.db.Query(status)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var ID int64
+		err := rows.Scan(&ID)
+		if err != nil {
+			return nil, err
+		}
+		IDs = append(IDs, ID)
+	}
+
+	return IDs, err
+}

@@ -6,6 +6,8 @@ import (
 	"github.com/kataras/golog"
 	"github.com/pkg/errors"
 	baseModels "labTelegramBot/core/models"
+	"os"
+	"strconv"
 	"strings"
 )
 
@@ -160,6 +162,31 @@ func (l *labsDelivery) SaveQuestion(message *tgbotapi.Message) (err error) {
 	}
 
 	err = l.repo.SaveQuestion(messageToSave)
+
+	return err
+}
+
+func (l *labsDelivery) Spam(message *tgbotapi.Message) (err error) {
+	IDs, err := l.repo.GetAllUsersID()
+	if err != nil {
+		return err
+	}
+	admin, err := strconv.Atoi(os.Getenv("ADMIN"))
+	if err != nil {
+		return errors.New("No admin token")
+	}
+
+	if message.Chat.ID != int64(admin) {
+		return errors.New("Unauthorized")
+	}
+	for _, v := range IDs {
+		msg := tgbotapi.NewMessage(v, message.CommandArguments())
+		msg.ParseMode = "HTML"
+		_, err = l.bot.Send(msg)
+		if err != nil {
+			golog.Error("sendMessage error: ", err)
+		}
+	}
 
 	return err
 }

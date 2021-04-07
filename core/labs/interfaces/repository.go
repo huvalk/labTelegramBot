@@ -9,4 +9,5 @@ type LabsRepository interface {
 	UploadLab(lab baseModels.Lab) error
 	SaveMessage(message baseModels.Message) error
 	SaveQuestion(message baseModels.Message) error
+	GetAllUsersID() ([]int64, error)
 }
