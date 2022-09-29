@@ -9,6 +9,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func (l *labsDelivery) RegisterUser(message *tgbotapi.Message) (err error) {
@@ -145,6 +146,7 @@ func (l *labsDelivery) SaveMessage(message *tgbotapi.Message) (err error) {
 		ChatID:     message.Chat.ID,
 		Message:    message.CommandArguments() + "\n" + message.Text + "\n" + message.Caption,
 		Additional: message.From.FirstName + "\n" + message.From.LastName + "\n" + message.From.UserName,
+		Time:       message.Time().Add(time.Hour * 3),
 	}
 
 	err = l.repo.SaveMessage(messageToSave)
@@ -159,9 +161,22 @@ func (l *labsDelivery) SaveQuestion(message *tgbotapi.Message) (err error) {
 		ChatID:     message.Chat.ID,
 		Message:    message.CommandArguments(),
 		Additional: message.From.FirstName + "\n" + message.From.LastName + "\n" + message.From.UserName,
+		Time:       message.Time().Add(time.Hour * 3),
 	}
 
 	err = l.repo.SaveQuestion(messageToSave)
+
+	admin, err := strconv.Atoi(os.Getenv("ADMIN"))
+	if err != nil {
+		return errors.New("No admin token")
+	}
+	fmt.Print(message.Time().String())
+	msg := tgbotapi.NewMessage(int64(admin), "@"+message.From.UserName+" "+message.Time().String()+" "+message.CommandArguments())
+	msg.ParseMode = "HTML"
+	_, err = l.bot.Send(msg)
+	if err != nil {
+		golog.Error("sendMessage error: ", err)
+	}
 
 	return err
 }

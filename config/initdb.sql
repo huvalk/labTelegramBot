@@ -11,6 +11,7 @@ create table if not exists labs
 	labNum INTEGER NOT NULL,
 	filePath VARCHAR(300) NOT NULL,
     status VARCHAR(64) NOT NULL,
+    comment TEXT NOT NULL DEFAULT '',
 	messageId INTEGER NOT NULL,
     FOREIGN KEY(student_id) REFERENCES students(id));
 

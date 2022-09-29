@@ -1,5 +1,7 @@
 package baseModels
 
+import "time"
+
 type Student struct {
 	UserID    int
 	FullName  string
@@ -17,9 +19,10 @@ type Lab struct {
 }
 
 type Message struct {
-	StudentID int
-	MessageID int
-	ChatID    int64
-	Message string
+	StudentID  int
+	MessageID  int
+	ChatID     int64
+	Message    string
 	Additional string
+	Time       time.Time
 }
